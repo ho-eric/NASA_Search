@@ -8,11 +8,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.nasasearch.R
+import com.example.nasasearch.model.Collection
+import com.example.nasasearch.model.Item
 import com.example.nasasearch.ui.theme.theme.theme.NASASearchTheme
 
 @Composable
@@ -21,8 +26,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
     when (nasaUiState) {
-        is NASAUiState.Loading -> LoadingScreen(modifier)
-        is NASAUiState.Success -> ResultScreen(nasaUiState.photos, modifier)
+        is NASAUiState.Loading -> LoadingScreen(modifier = modifier)
+        is NASAUiState.Success -> NASAPhotoCard(photo = nasaUiState.photos, modifier = modifier)
         else -> ErrorScreen(modifier)
 
     }
@@ -60,6 +65,18 @@ fun ResultScreen(nasaUiState: String, modifier: Modifier = Modifier) {
     ) {
         Text(nasaUiState)
     }
+}
+
+@Composable
+fun NASAPhotoCard(photo: Item, modifier: Modifier = Modifier) {
+    AsyncImage(
+        model = ImageRequest.Builder(context = LocalContext.current)
+            .data(photo.links[0].href)
+            .crossfade(true)
+            .build(),
+        contentDescription = "Test"
+    )
+
 }
 
 @Preview(showBackground = true)
