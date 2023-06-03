@@ -2,8 +2,13 @@ package com.example.nasasearch.ui.theme.theme.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,7 +33,7 @@ fun HomeScreen(
 ) {
     when (nasaUiState) {
         is NASAUiState.Loading -> LoadingScreen(modifier = modifier)
-        is NASAUiState.Success -> NASAPhotoCard(photo = nasaUiState.photos, modifier = modifier)
+        is NASAUiState.Success -> PhotosGridScreen(nasaUiState.photos, modifier = modifier)
         else -> ErrorScreen(modifier)
 
     }
@@ -80,7 +85,19 @@ fun NASAPhotoCard(photo: Item, modifier: Modifier = Modifier) {
         contentDescription = "Test",
         contentScale = ContentScale.FillBounds
     )
+}
 
+@Composable
+fun PhotosGridScreen(photos: Collection, modifier: Modifier = Modifier) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(150.dp),
+        modifier = modifier.fillMaxWidth(),
+        contentPadding = PaddingValues(4.dp)
+    ) {
+        items(items = photos.collection.items, key = {photos -> photos.data[0].nasaId}) {
+            photo -> NASAPhotoCard(photo)
+        }
+    }
 }
 
 @Preview(showBackground = true)

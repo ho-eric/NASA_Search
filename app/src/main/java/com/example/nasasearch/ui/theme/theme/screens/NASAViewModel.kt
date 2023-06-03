@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 sealed interface NASAUiState {
-    data class Success(val photos: Item) : NASAUiState
+    data class Success(val photos: Collection) : NASAUiState
     object Error : NASAUiState
     object Loading : NASAUiState
 }
@@ -30,8 +30,8 @@ class NASAViewModel : ViewModel() {
     fun getNASAData() {
         viewModelScope.launch {
             nasaUiState = try{
-                val result = NASAApi.retrofitService.getData().collection.items[0].links[0].href
-                NASAUiState.Success(NASAApi.retrofitService.getData().collection.items[0])
+//                val result = NASAApi.retrofitService.getData().collection.items[0].links[0].href
+                NASAUiState.Success(NASAApi.retrofitService.getData())
             } catch (e: IOException) {
                 NASAUiState.Error
             }
