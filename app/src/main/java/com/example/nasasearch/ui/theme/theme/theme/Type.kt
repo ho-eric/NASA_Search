@@ -1,4 +1,4 @@
-package com.example.nasasearch.ui.theme.theme
+package com.example.nasasearch.ui.theme.theme.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
