@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.nasasearch.network.NASAApi
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class NASAViewModel : ViewModel() {
     var nasaUiState: String by mutableStateOf("")
@@ -22,8 +23,13 @@ class NASAViewModel : ViewModel() {
      */
     fun getNASAData() {
         viewModelScope.launch {
-            val listResult = NASAApi.retrofitService.getData()
-            nasaUiState = listResult
+            try{
+                val listResult = NASAApi.retrofitService.getData()
+                nasaUiState = listResult
+            } catch (e: IOException) {
+
+            }
+
         }
     }
 }
