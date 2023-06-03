@@ -13,7 +13,7 @@ private val retrofit = Retrofit.Builder()
 
 interface NASASearchApiService {
     @GET("search?q=mars&media_type=image")
-    fun getData(): String
+    suspend fun getData(): String
 }
 
 object NASAApi {
