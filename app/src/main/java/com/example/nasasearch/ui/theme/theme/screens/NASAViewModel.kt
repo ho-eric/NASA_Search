@@ -4,6 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.nasasearch.network.NASAApi
+import kotlinx.coroutines.launch
 
 class NASAViewModel : ViewModel() {
     var nasaUiState: String by mutableStateOf("")
@@ -17,6 +21,9 @@ class NASAViewModel : ViewModel() {
      * Gets Mars photos information from the Mars API
      */
     fun getNASAData() {
-        nasaUiState = "Set the API status response here!"
+        viewModelScope.launch {
+            val listResult = NASAApi.retrofitService.getData()
+            nasaUiState = listResult
+        }
     }
 }
