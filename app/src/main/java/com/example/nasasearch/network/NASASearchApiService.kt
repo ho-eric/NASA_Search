@@ -1,19 +1,23 @@
 package com.example.nasasearch.network
 
+import com.example.nasasearch.model.Collection
 import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
+import kotlinx.serialization.json.Json
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import okhttp3.MediaType
+
 
 private const val BASE_URL = "https://images-api.nasa.gov/"
 
 private val retrofit = Retrofit.Builder()
-    .addConverterFactory(ScalarsConverterFactory.create())
+    .addConverterFactory(Json{ ignoreUnknownKeys = true; isLenient = true; }.asConverterFactory(MediaType.get("application/json")))
     .baseUrl(BASE_URL)
     .build()
 
 interface NASASearchApiService {
     @GET("search?q=mars&media_type=image")
-    suspend fun getData(): String
+    suspend fun getData(): Collection
 }
 
 object NASAApi {
