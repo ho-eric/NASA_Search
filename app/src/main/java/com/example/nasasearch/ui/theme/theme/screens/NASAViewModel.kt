@@ -10,26 +10,28 @@ import com.example.nasasearch.network.NASAApi
 import kotlinx.coroutines.launch
 import java.io.IOException
 
+sealed interface NASAUiState {
+    data class Success(val photos: String) : NASAUiState
+    object Error : NASAUiState
+    object Loading : NASAUiState
+}
+
 class NASAViewModel : ViewModel() {
-    var nasaUiState: String by mutableStateOf("")
+    var nasaUiState: NASAUiState by mutableStateOf(NASAUiState.Loading)
         private set
 
     init {
         getNASAData()
     }
 
-    /**
-     * Gets Mars photos information from the Mars API
-     */
     fun getNASAData() {
         viewModelScope.launch {
-            try{
+            nasaUiState = try{
                 val listResult = NASAApi.retrofitService.getData()
-                nasaUiState = listResult
+                NASAUiState.Success("${listResult.collection.items.size} itmes retrieved")
             } catch (e: IOException) {
-
+                NASAUiState.Error
             }
-
         }
     }
 }
