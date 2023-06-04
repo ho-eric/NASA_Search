@@ -30,9 +30,11 @@ fun NASASearchApp(modifier: Modifier = Modifier) {
                 .padding(it),
             color = MaterialTheme.colorScheme.background
         ) {
-            val nasaViewModel: NASAViewModel = viewModel()
+            val nasaViewModel: NASAViewModel =
+                viewModel(factory = NASAViewModel.Factory)
             HomeScreen(
-                nasaUiState = nasaViewModel.nasaUiState
+                nasaUiState = nasaViewModel.nasaUiState,
+                retryAction = nasaViewModel::getNASAData
             )
         }
     }

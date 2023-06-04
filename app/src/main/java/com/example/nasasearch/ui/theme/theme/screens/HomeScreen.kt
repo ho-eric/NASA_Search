@@ -1,7 +1,9 @@
 package com.example.nasasearch.ui.theme.theme.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -33,12 +36,13 @@ import com.example.nasasearch.ui.theme.theme.theme.NASASearchTheme
 @Composable
 fun HomeScreen(
     nasaUiState: NASAUiState,
+    retryAction: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     when (nasaUiState) {
         is NASAUiState.Loading -> LoadingScreen(modifier = modifier)
         is NASAUiState.Success -> PhotosGridScreen(nasaUiState.photos, modifier = modifier)
-        else -> ErrorScreen(modifier)
+        is NASAUiState.Error -> ErrorScreen(retryAction, modifier)
 
     }
 }
@@ -58,12 +62,16 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ErrorScreen(modifier: Modifier = Modifier) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier.fillMaxSize()
+fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Failed to load")
+        Text("Failed to load")
+        Button(onClick = retryAction) {
+            Text("Retry")
+        }
     }
 
 }
