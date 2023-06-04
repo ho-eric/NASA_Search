@@ -3,12 +3,16 @@ package com.example.nasasearch.ui.theme.theme.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -75,16 +79,27 @@ fun ResultScreen(nasaUiState: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun NASAPhotoCard(photo: Item, modifier: Modifier = Modifier) {
-    AsyncImage(
-        model = ImageRequest.Builder(context = LocalContext.current)
-            .data(photo.links[0].href)
-            .crossfade(true)
-            .build(),
-        error = painterResource(R.drawable.ic_broken_image),
-        placeholder = painterResource(R.drawable.loading_img),
-        contentDescription = "Test",
-        contentScale = ContentScale.FillBounds
-    )
+    Card (
+        modifier = modifier
+            .padding(4.dp)
+            .fillMaxWidth()
+            .aspectRatio(1f),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp
+        ),
+
+        ){
+        AsyncImage(
+            model = ImageRequest.Builder(context = LocalContext.current)
+                .data(photo.links[0].href)
+                .crossfade(true)
+                .build(),
+            error = painterResource(R.drawable.ic_broken_image),
+            placeholder = painterResource(R.drawable.loading_img),
+            contentDescription = "Test",
+            contentScale = ContentScale.FillBounds
+        )
+    }
 }
 
 @Composable
@@ -104,6 +119,6 @@ fun PhotosGridScreen(photos: Collection, modifier: Modifier = Modifier) {
 @Composable
 fun ResultScreenPreview() {
     NASASearchTheme {
-        ResultScreen("TEST")
+
     }
 }
