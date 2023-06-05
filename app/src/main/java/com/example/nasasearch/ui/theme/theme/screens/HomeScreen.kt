@@ -2,10 +2,10 @@ package com.example.nasasearch.ui.theme.theme.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -36,34 +37,35 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.nasasearch.R
-import com.example.nasasearch.data.NASADataRepository
 import com.example.nasasearch.model.Collection
 import com.example.nasasearch.model.Item
-import com.example.nasasearch.network.NASASearchApiService
 import com.example.nasasearch.ui.theme.theme.theme.NASASearchTheme
 
 @Composable
 fun HomeScreen(
     nasaUiState: NASAUiState,
-    retryAction: () -> Unit,
+    retryAction: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val viewModel = viewModel<NASAViewModel>()
 
     when (nasaUiState) {
         is NASAUiState.Loading -> LoadingScreen(modifier = modifier)
-        is NASAUiState.Success -> PhotosGridScreen(nasaUiState.photos, modifier = modifier, viewModel = viewModel)
-        is NASAUiState.Error -> ErrorScreen(retryAction, modifier)
+        is NASAUiState.Success -> PhotosGridScreen(
+            nasaUiState.photos,
+            modifier = modifier,
+            viewModel = viewModel
+        )
+
+        is NASAUiState.Error -> ErrorScreen({ viewModel.getNASAData("") }, modifier)
     }
 }
 
@@ -82,14 +84,14 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
+fun ErrorScreen(retryAction: (String) -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("Failed to load")
-        Button(onClick = retryAction) {
+        Button(onClick = { retryAction("") }) {
             Text("Retry")
         }
     }
@@ -175,6 +177,22 @@ fun PhotosGridScreen(photos: Collection, modifier: Modifier = Modifier, viewMode
             },
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Search, contentDescription = "Search icon")
+            },
+            trailingIcon = {
+                if (active) {
+                    Icon(
+                        modifier = Modifier.clickable {
+                            if (searchTerm.isNotEmpty()) {
+                                searchTerm = ""
+                            } else {
+                                active = false
+                            }
+                        },
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Close icon"
+                    )
+                }
+
             }
         ) {
         }
