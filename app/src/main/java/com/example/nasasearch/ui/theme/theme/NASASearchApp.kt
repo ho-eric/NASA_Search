@@ -8,8 +8,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.nasasearch.ui.theme.theme.screens.HomeScreen
 import com.example.nasasearch.ui.theme.theme.screens.NASAViewModel
@@ -20,7 +23,8 @@ fun NASASearchApp(modifier: Modifier = Modifier) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = { TopAppBar(
-            title = { Text("NASA Search App") })
+            title = { Text("NASA Search App") }
+        )
 
         }
     ) {

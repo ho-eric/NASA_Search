@@ -41,11 +41,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.nasasearch.R
+import com.example.nasasearch.data.NASADataRepository
 import com.example.nasasearch.model.Collection
 import com.example.nasasearch.model.Item
+import com.example.nasasearch.network.NASASearchApiService
 import com.example.nasasearch.ui.theme.theme.theme.NASASearchTheme
 
 @Composable
@@ -54,43 +58,12 @@ fun HomeScreen(
     retryAction: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var text by remember { mutableStateOf("") }
+    val viewModel = viewModel<NASAViewModel>()
 
     when (nasaUiState) {
-//        is NASAUiState.HomeSearch -> SearchScreen(modifier = modifier)
         is NASAUiState.Loading -> LoadingScreen(modifier = modifier)
-        is NASAUiState.Success -> PhotosGridScreen(nasaUiState.photos, modifier = modifier)
+        is NASAUiState.Success -> PhotosGridScreen(nasaUiState.photos, modifier = modifier, viewModel = viewModel)
         is NASAUiState.Error -> ErrorScreen(retryAction, modifier)
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SearchScreen(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    var text by remember { mutableStateOf("") }
-    var active by remember { mutableStateOf(false) }
-    Column {
-        SearchBar(
-            modifier = Modifier.fillMaxWidth(),
-            query = text,
-            onQueryChange = {
-                text = it
-            },
-            onSearch = {
-                active = false
-            },
-            active = active,
-            onActiveChange = {
-                active = it
-            },
-            placeholder = {
-                Text(text = "Search...")
-            },
-            leadingIcon = {
-                Icon(imageVector = Icons.Default.Search, contentDescription = "Search icon")
-            }
-        ) {
-        }
     }
 }
 
@@ -178,7 +151,7 @@ fun NASAPhotoCard(photo: Item, modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PhotosGridScreen(photos: Collection, modifier: Modifier = Modifier) {
+fun PhotosGridScreen(photos: Collection, modifier: Modifier = Modifier, viewModel: NASAViewModel) {
     var searchTerm by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
 
@@ -190,6 +163,7 @@ fun PhotosGridScreen(photos: Collection, modifier: Modifier = Modifier) {
                 searchTerm = it
             },
             onSearch = {
+                viewModel.getNASAData(searchTerm)
                 active = false
             },
             active = active,
@@ -197,7 +171,7 @@ fun PhotosGridScreen(photos: Collection, modifier: Modifier = Modifier) {
                 active = it
             },
             placeholder = {
-                Text(text = "Search")
+                Text("Search")
             },
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Search, contentDescription = "Search icon")
@@ -216,7 +190,6 @@ fun PhotosGridScreen(photos: Collection, modifier: Modifier = Modifier) {
             }
         }
     }
-
 }
 
 @Preview(showBackground = true)
