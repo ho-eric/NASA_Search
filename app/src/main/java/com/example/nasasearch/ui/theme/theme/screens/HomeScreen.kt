@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -66,7 +68,7 @@ fun HomeScreen(
 
         is NASAUiState.Loading -> LoadingScreen(modifier = modifier)
         is NASAUiState.Error -> ErrorScreen({ viewModel.getNASAData("") }, modifier)
-        is NASAUiState.Details -> DetailsScreen(viewModel = viewModel, nasaUiState.photos)
+        is NASAUiState.Details -> DetailsScreen(viewModel)
     }
 }
 
@@ -100,11 +102,19 @@ fun ErrorScreen(retryAction: (String) -> Unit, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun NASAPhotoCard(photo: Item, modifier: Modifier = Modifier) {
+fun NASAPhotoCard(photo: Item, modifier: Modifier = Modifier, viewModel: NASAViewModel) {
     Card(
         modifier = modifier
             .padding(4.dp)
             .fillMaxWidth()
+            .clickable(onClick = {
+                viewModel.setDetailsScreen(
+                    photo.links[0].href,
+                    photo.data[0].title,
+                    photo.data[0].description,
+                    photo.data[0].dateCreated
+                )
+            })
             .aspectRatio(1f),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 8.dp
@@ -206,17 +216,32 @@ fun PhotosGridScreen(photos: Collection, modifier: Modifier = Modifier, viewMode
                 items = photos.collection.items,
                 key = { photos -> photos.data[0].nasaId }) { photo ->
                 NASAPhotoCard(
-                    photo,
-                    modifier = Modifier.clickable(onClick = { viewModel.setDetailsScreen(searchTerm) }))
+                    viewModel = viewModel, photo = photo
+                )
             }
         }
     }
 }
 
 @Composable
-fun DetailsScreen(viewModel: NASAViewModel, photos: Collection, modifier: Modifier = Modifier) {
-    Column() {
-        Text(text = photos.collection.items[20].data[0].title)
+fun DetailsScreen(viewModel: NASAViewModel) {
+    Column(Modifier.verticalScroll(rememberScrollState())) {
+
+        Column {
+            AsyncImage(
+                modifier = Modifier.fillMaxSize(),
+                model = ImageRequest.Builder(context = LocalContext.current)
+                    .data(viewModel.nasaImage)
+                    .crossfade(true)
+                    .build(),
+                error = painterResource(R.drawable.ic_broken_image),
+                placeholder = painterResource(R.drawable.loading_img),
+                contentDescription = "Test"
+            )
+            Text(text = viewModel.nasaTitle)
+            Text(text = viewModel.nasaDescription)
+            Text(text = viewModel.nasaCreationDate)
+        }
     }
 }
 

@@ -4,7 +4,7 @@ import com.example.nasasearch.model.Collection
 import com.example.nasasearch.network.NASASearchApiService
 
 interface NASADataRepository {
-    suspend fun getNASAData(q: String): Collection
+    suspend fun getNASAData(q: String = ""): Collection
 }
 
 class NetworkNASADataRepository(

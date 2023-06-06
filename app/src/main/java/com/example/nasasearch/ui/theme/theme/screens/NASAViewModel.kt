@@ -13,6 +13,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.nasasearch.NASASearchApplication
 import com.example.nasasearch.data.NASADataRepository
 import com.example.nasasearch.model.Collection
+import com.example.nasasearch.model.Item
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -22,12 +23,22 @@ sealed interface NASAUiState {
     object Error : NASAUiState
     object Loading : NASAUiState
 
-    data class Details(val photos: Collection) : NASAUiState
+    data class Details(val title: String, val description: String) : NASAUiState
 }
 
 class NASAViewModel(private val nasaDataRepository: NASADataRepository) : ViewModel() {
     var nasaUiState: NASAUiState by mutableStateOf(NASAUiState.Loading)
         private set
+
+    var nasaImage: String by mutableStateOf("")
+        private set
+    var nasaTitle: String by mutableStateOf("")
+        private set
+
+    var nasaDescription: String by mutableStateOf("")
+        private set
+
+    var nasaCreationDate: String by mutableStateOf("")
 
     init {
         getNASAData("")
@@ -46,9 +57,13 @@ class NASAViewModel(private val nasaDataRepository: NASADataRepository) : ViewMo
         }
     }
 
-    fun setDetailsScreen(searchTerm: String) {
+    fun setDetailsScreen(image: String, title: String, description: String, creationDate: String) {
         viewModelScope.launch {
-            nasaUiState = NASAUiState.Details(nasaDataRepository.getNASAData(searchTerm))
+            nasaUiState = NASAUiState.Details(title, description)
+            nasaImage = image
+            nasaTitle = title
+            nasaDescription = description
+            nasaCreationDate = creationDate
         }
     }
 
