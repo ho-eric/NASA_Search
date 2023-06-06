@@ -58,14 +58,15 @@ fun HomeScreen(
     val viewModel = viewModel<NASAViewModel>()
 
     when (nasaUiState) {
-        is NASAUiState.Loading -> LoadingScreen(modifier = modifier)
         is NASAUiState.Success -> PhotosGridScreen(
             nasaUiState.photos,
             modifier = modifier,
             viewModel = viewModel
         )
 
+        is NASAUiState.Loading -> LoadingScreen(modifier = modifier)
         is NASAUiState.Error -> ErrorScreen({ viewModel.getNASAData("") }, modifier)
+        is NASAUiState.Details -> DetailsScreen(viewModel = viewModel, nasaUiState.photos)
     }
 }
 
@@ -204,9 +205,18 @@ fun PhotosGridScreen(photos: Collection, modifier: Modifier = Modifier, viewMode
             items(
                 items = photos.collection.items,
                 key = { photos -> photos.data[0].nasaId }) { photo ->
-                NASAPhotoCard(photo)
+                NASAPhotoCard(
+                    photo,
+                    modifier = Modifier.clickable(onClick = { viewModel.setDetailsScreen(searchTerm) }))
             }
         }
+    }
+}
+
+@Composable
+fun DetailsScreen(viewModel: NASAViewModel, photos: Collection, modifier: Modifier = Modifier) {
+    Column() {
+        Text(text = photos.collection.items[20].data[0].title)
     }
 }
 
