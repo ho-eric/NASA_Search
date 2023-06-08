@@ -1,6 +1,5 @@
 package com.example.nasasearch.ui.theme.theme.screens
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -21,8 +20,6 @@ sealed interface NASAUiState {
     data class Success(val photos: Collection) : NASAUiState
     object Error : NASAUiState
     object Loading : NASAUiState
-
-//    object Details : NASAUiState
 }
 
 class NASAViewModel(private val nasaDataRepository: NASADataRepository) : ViewModel() {
@@ -58,7 +55,6 @@ class NASAViewModel(private val nasaDataRepository: NASADataRepository) : ViewMo
 
     fun setDetailsScreen(image: String, title: String, description: String, creationDate: String) {
         viewModelScope.launch {
-//            nasaUiState = NASAUiState.Details
             nasaImage = image
             nasaTitle = title
             nasaDescription = description

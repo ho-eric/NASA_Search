@@ -16,13 +16,17 @@ import com.example.nasasearch.ui.theme.theme.screens.NASAViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NASASearchApp(modifier: Modifier = Modifier, navController: NavHostController, nasaViewModel: NASAViewModel) {
+fun NASASearchApp(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    nasaViewModel: NASAViewModel
+) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = { TopAppBar(
-            title = { Text("NASA Search App") }
-        )
-
+        topBar = {
+            TopAppBar(
+                title = { Text("NASA Search App") }
+            )
         }
     ) {
         Surface(

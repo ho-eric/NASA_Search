@@ -1,6 +1,5 @@
 package com.example.nasasearch.ui.theme.theme.screens
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,14 +44,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.nasasearch.R
@@ -79,7 +76,6 @@ fun HomeScreen(
 
         is NASAUiState.Loading -> LoadingScreen(modifier = modifier)
         is NASAUiState.Error -> ErrorScreen({ viewModel.getNASAData("") }, modifier)
-//        is NASAUiState.Details -> DetailsTestScreen(navController = navController)
     }
 }
 
@@ -297,7 +293,6 @@ fun DetailsScreen(navController: NavHostController, viewModel: NASAViewModel) {
             }
         }
     }
-
 }
 
 @Preview(showBackground = true)

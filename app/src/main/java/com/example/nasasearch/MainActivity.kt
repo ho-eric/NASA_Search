@@ -25,7 +25,6 @@ class MainActivity : ComponentActivity() {
 
                     composable("home_screen") {
                         nasaViewModel = viewModel(factory = NASAViewModel.Factory)
-
                         NASASearchApp(navController = navController, nasaViewModel = nasaViewModel)
                     }
                     composable("details_screen") {
