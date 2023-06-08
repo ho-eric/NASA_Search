@@ -1,5 +1,6 @@
 package com.example.nasasearch.ui.theme.theme.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
@@ -25,8 +27,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,10 +44,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.nasasearch.R
@@ -55,7 +64,8 @@ import com.example.nasasearch.ui.theme.theme.theme.NASASearchTheme
 fun HomeScreen(
     nasaUiState: NASAUiState,
     retryAction: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
     val viewModel = viewModel<NASAViewModel>()
 
@@ -63,12 +73,13 @@ fun HomeScreen(
         is NASAUiState.Success -> PhotosGridScreen(
             nasaUiState.photos,
             modifier = modifier,
-            viewModel = viewModel
+            viewModel = viewModel,
+            navController = navController
         )
 
         is NASAUiState.Loading -> LoadingScreen(modifier = modifier)
         is NASAUiState.Error -> ErrorScreen({ viewModel.getNASAData("") }, modifier)
-        is NASAUiState.Details -> DetailsScreen(viewModel)
+//        is NASAUiState.Details -> DetailsTestScreen(navController = navController)
     }
 }
 
@@ -98,23 +109,28 @@ fun ErrorScreen(retryAction: (String) -> Unit, modifier: Modifier = Modifier) {
             Text("Retry")
         }
     }
-
 }
 
 @Composable
-fun NASAPhotoCard(photo: Item, modifier: Modifier = Modifier, viewModel: NASAViewModel) {
+fun NASAPhotoCard(
+    photo: Item,
+    modifier: Modifier = Modifier,
+    viewModel: NASAViewModel,
+    navController: NavController
+) {
     Card(
         modifier = modifier
             .padding(4.dp)
             .fillMaxWidth()
-            .clickable(onClick = {
+            .clickable {
                 viewModel.setDetailsScreen(
                     photo.links[0].href,
                     photo.data[0].title,
                     photo.data[0].description,
                     photo.data[0].dateCreated
                 )
-            })
+                navController.navigate("details_screen")
+            }
             .aspectRatio(1f),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 8.dp
@@ -161,10 +177,14 @@ fun NASAPhotoCard(photo: Item, modifier: Modifier = Modifier, viewModel: NASAVie
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PhotosGridScreen(photos: Collection, modifier: Modifier = Modifier, viewModel: NASAViewModel) {
+fun PhotosGridScreen(
+    photos: Collection,
+    modifier: Modifier = Modifier,
+    viewModel: NASAViewModel,
+    navController: NavController
+) {
     var searchTerm by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
 
@@ -216,33 +236,68 @@ fun PhotosGridScreen(photos: Collection, modifier: Modifier = Modifier, viewMode
                 items = photos.collection.items,
                 key = { photos -> photos.data[0].nasaId }) { photo ->
                 NASAPhotoCard(
-                    viewModel = viewModel, photo = photo
+                    viewModel = viewModel, photo = photo, navController = navController
                 )
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailsScreen(viewModel: NASAViewModel) {
-    Column(Modifier.verticalScroll(rememberScrollState())) {
+fun DetailsScreen(navController: NavHostController, viewModel: NASAViewModel) {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
 
-        Column {
-            AsyncImage(
-                modifier = Modifier.fillMaxSize(),
-                model = ImageRequest.Builder(context = LocalContext.current)
-                    .data(viewModel.nasaImage)
-                    .crossfade(true)
-                    .build(),
-                error = painterResource(R.drawable.ic_broken_image),
-                placeholder = painterResource(R.drawable.loading_img),
-                contentDescription = "Test"
+            TopAppBar(
+                title = { Text("NASA Search App") },
+                navigationIcon = {
+                    Icon(
+                        modifier = Modifier.clickable { navController.popBackStack() },
+                        imageVector = Icons.Default.ArrowBack, contentDescription = "Back arrow"
+                    )
+                }
             )
-            Text(text = viewModel.nasaTitle)
-            Text(text = viewModel.nasaDescription)
-            Text(text = viewModel.nasaCreationDate)
+
+        }
+    ) {
+        Column(
+            Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(it)
+        ) {
+
+            Column {
+                AsyncImage(
+                    modifier = Modifier.fillMaxSize(),
+                    model = ImageRequest.Builder(context = LocalContext.current)
+                        .data(viewModel.nasaImage)
+                        .crossfade(true)
+                        .build(),
+                    error = painterResource(R.drawable.ic_broken_image),
+                    placeholder = painterResource(R.drawable.loading_img),
+                    contentDescription = "Test"
+                )
+                Text(
+                    modifier = Modifier.padding(5.dp),
+                    text = viewModel.nasaTitle,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+
+                    )
+                Text(
+                    modifier = Modifier.padding(5.dp),
+                    text = viewModel.nasaCreationDate
+                )
+                Text(
+                    modifier = Modifier.padding(5.dp),
+                    text = viewModel.nasaDescription
+                )
+            }
         }
     }
+
 }
 
 @Preview(showBackground = true)

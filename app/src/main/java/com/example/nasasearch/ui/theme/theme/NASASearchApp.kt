@@ -10,13 +10,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.nasasearch.ui.theme.theme.screens.HomeScreen
 import com.example.nasasearch.ui.theme.theme.screens.NASAViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NASASearchApp(modifier: Modifier = Modifier) {
+fun NASASearchApp(modifier: Modifier = Modifier, navController: NavHostController, nasaViewModel: NASAViewModel) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = { TopAppBar(
@@ -31,11 +31,10 @@ fun NASASearchApp(modifier: Modifier = Modifier) {
                 .padding(it),
             color = MaterialTheme.colorScheme.background
         ) {
-            val nasaViewModel: NASAViewModel =
-                viewModel(factory = NASAViewModel.Factory)
             HomeScreen(
                 nasaUiState = nasaViewModel.nasaUiState,
-                retryAction = nasaViewModel::getNASAData
+                retryAction = nasaViewModel::getNASAData,
+                navController = navController
             )
         }
     }
