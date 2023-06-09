@@ -3,6 +3,7 @@ package com.example.nasasearch
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,22 +18,27 @@ const val ROUTE_DETAILS_SCREEN = "details_screen"
 
 
 class MainActivity : ComponentActivity() {
-    private lateinit var nasaViewModel: NASAViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             NASASearchTheme {
-                val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = ROUTE_HOME_SCREEN) {
-                    composable(ROUTE_HOME_SCREEN) {
-                        nasaViewModel = viewModel(factory = NASAViewModel.Factory)
-                        NASASearchApp(navController = navController, nasaViewModel = nasaViewModel)
-                    }
-                    composable(ROUTE_DETAILS_SCREEN) {
-                        DetailsScreen(navController, nasaViewModel)
-                    }
-                }
+               SetupNavHost()
             }
+        }
+    }
+}
+
+@Composable
+fun SetupNavHost() {
+    lateinit var nasaViewModel: NASAViewModel
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = ROUTE_HOME_SCREEN) {
+        composable(ROUTE_HOME_SCREEN) {
+            nasaViewModel = viewModel(factory = NASAViewModel.Factory)
+            NASASearchApp(navController = navController, nasaViewModel = nasaViewModel)
+        }
+        composable(ROUTE_DETAILS_SCREEN) {
+            DetailsScreen(navController, nasaViewModel)
         }
     }
 }

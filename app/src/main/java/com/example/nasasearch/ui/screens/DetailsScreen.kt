@@ -16,6 +16,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +28,13 @@ import coil.request.ImageRequest
 import com.example.nasasearch.R
 import com.example.nasasearch.ui.NASAViewModel
 
+const val BACK_BUTTON_TEST_TAG = "backbuttontag"
+const val DETAILS_SCREEN_TEST_TAG = "detailsscreentag"
+const val DETAILS_SCREEN_IMAGE_TAG = "detailsimagetag"
+const val DETAILS_SCREEN_TITLE_TAG = "detailstitletag"
+const val DETAILS_SCREEN_DATE_TAG = "detailsdatetag"
+const val DETAILS_SCREEN_DESCRIPTION_TAG = "detailsdescriptiontag"
+
 private const val BACK_ARROW_CONTENT_DESCRIPTION = "Back arrow"
 
 
@@ -34,14 +42,15 @@ private const val BACK_ARROW_CONTENT_DESCRIPTION = "Back arrow"
 @Composable
 fun DetailsScreen(navController: NavHostController, viewModel: NASAViewModel) {
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().testTag(DETAILS_SCREEN_TEST_TAG),
         topBar = {
 
             TopAppBar(
                 title = { Text(stringResource(R.string.app_name)) },
                 navigationIcon = {
                     Icon(
-                        modifier = Modifier.clickable { navController.popBackStack() },
+                        modifier = Modifier.clickable { navController.popBackStack() }.testTag(
+                            BACK_BUTTON_TEST_TAG),
                         imageVector = Icons.Default.ArrowBack, contentDescription = BACK_ARROW_CONTENT_DESCRIPTION
                     )
                 }
@@ -55,7 +64,7 @@ fun DetailsScreen(navController: NavHostController, viewModel: NASAViewModel) {
         ) {
             Column {
                 AsyncImage(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().testTag(DETAILS_SCREEN_IMAGE_TAG),
                     model = ImageRequest.Builder(context = LocalContext.current)
                         .data(viewModel.nasaImage)
                         .crossfade(true)
@@ -65,18 +74,18 @@ fun DetailsScreen(navController: NavHostController, viewModel: NASAViewModel) {
                     contentDescription = viewModel.nasaTitle
                 )
                 Text(
-                    modifier = Modifier.padding(5.dp),
+                    modifier = Modifier.padding(5.dp).testTag(DETAILS_SCREEN_TITLE_TAG),
                     text = viewModel.nasaTitle,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
 
                     )
                 Text(
-                    modifier = Modifier.padding(5.dp),
+                    modifier = Modifier.padding(5.dp).testTag(DETAILS_SCREEN_DATE_TAG),
                     text = viewModel.nasaCreationDate
                 )
                 Text(
-                    modifier = Modifier.padding(5.dp),
+                    modifier = Modifier.padding(5.dp).testTag(DETAILS_SCREEN_DESCRIPTION_TAG),
                     text = viewModel.nasaDescription
                 )
             }

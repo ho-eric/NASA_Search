@@ -32,9 +32,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -46,11 +46,13 @@ import com.example.nasasearch.R
 import com.example.nasasearch.ROUTE_DETAILS_SCREEN
 import com.example.nasasearch.model.Collection
 import com.example.nasasearch.model.Item
-import com.example.nasasearch.theme.NASASearchTheme
 import com.example.nasasearch.ui.NASAUiState
 import com.example.nasasearch.ui.NASAViewModel
 
-private const val PHOTO_CARD_CONTENT_DESCRIPTION = "A NASA photo card"
+const val HOME_SCREEN_TEST_TAG = "homescreentag"
+const val SEARCH_BAR_TEST_TAG = "searchbartag"
+
+const val PHOTO_CARD_CONTENT_DESCRIPTION = "A NASA photo card"
 private const val SEARCH_ICON = "Search icon"
 private const val SEARCH_TEXT = "Search"
 private const val CLOSE_ICON = "Close icon"
@@ -65,7 +67,7 @@ fun HomeScreen(
     when (nasaUiState) {
         is NASAUiState.Success -> PhotosGridScreen(
             photos = nasaUiState.photos,
-            modifier = modifier,
+            modifier = modifier.testTag(HOME_SCREEN_TEST_TAG),
             viewModel = viewModel,
             navController = navController
         )
@@ -79,12 +81,14 @@ private fun NASAPhotoCard(
     photo: Item,
     modifier: Modifier = Modifier,
     viewModel: NASAViewModel,
-    navController: NavController
+    navController: NavController,
+    id: String
 ) {
     Card(
         modifier = modifier
             .padding(4.dp)
             .fillMaxWidth()
+            .testTag(id)
             .clickable {
                 viewModel.setDetailsScreen(
                     photo.links[0].href,
@@ -132,6 +136,7 @@ private fun NASAPhotoCard(
                 contentAlignment = Alignment.BottomStart
             ) {
                 Text(
+                    modifier = Modifier,
                     text = photo.data[0].title,
                     style = TextStyle(color = Color.White, fontSize = 15.sp)
                 )
@@ -153,7 +158,7 @@ private fun PhotosGridScreen(
 
     Column {
         SearchBar(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag(SEARCH_BAR_TEST_TAG),
             query = searchTerm,
             onQueryChange = {
                 searchTerm = it
@@ -198,16 +203,9 @@ private fun PhotosGridScreen(
                 items = photos.collection.items,
                 key = { photos -> photos.data[0].nasaId }) { photo ->
                 NASAPhotoCard(
-                    viewModel = viewModel, photo = photo, navController = navController
+                    viewModel = viewModel, photo = photo, navController = navController, id = photo.data[0].nasaId
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ResultScreenPreview() {
-    NASASearchTheme {
     }
 }
