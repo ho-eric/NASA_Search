@@ -18,7 +18,7 @@ For this project, I used:
   - Included components that adheres to Google's material design standards such as search bar and card components
 
 
-I attempted to architect by app in the MVVM format:
+I attempted to architect my app in the MVVM format:
 
 ![app architecture](/image1.png?raw=true)
 
