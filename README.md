@@ -18,6 +18,7 @@ I attempted to architect by app in the MVVM format:
 
 ![app architecture](/image1.png?raw=true)
 
-To build/run my app,
+To build/run my app, open android studio, at the top menu bar, click build, then build bundle(s)/APK(s), build APK. The APK file will be located in \NASASearch\app\build\outputs\apk\debug.
 
-Anything else important
+Anything else important:
+Repo Link: https://github.com/ho-eric/NASA_Search
