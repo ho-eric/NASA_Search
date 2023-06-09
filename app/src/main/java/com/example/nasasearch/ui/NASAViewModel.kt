@@ -1,4 +1,4 @@
-package com.example.nasasearch.ui.theme.theme.screens
+package com.example.nasasearch.ui
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

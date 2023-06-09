@@ -1,4 +1,4 @@
-package com.example.nasasearch.ui.theme.theme
+package com.example.nasasearch.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,9 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
-import com.example.nasasearch.ui.theme.theme.screens.HomeScreen
-import com.example.nasasearch.ui.theme.theme.screens.NASAViewModel
+import com.example.nasasearch.R
+import com.example.nasasearch.ui.screens.HomeScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,7 +26,7 @@ fun NASASearchApp(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("NASA Search App") }
+                title = { Text(stringResource(R.string.app_name)) }
             )
         }
     ) {
@@ -37,7 +38,6 @@ fun NASASearchApp(
         ) {
             HomeScreen(
                 nasaUiState = nasaViewModel.nasaUiState,
-                retryAction = nasaViewModel::getNASAData,
                 navController = navController
             )
         }

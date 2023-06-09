@@ -1,4 +1,4 @@
-package com.example.nasasearch.ui.theme.theme.theme
+package com.example.nasasearch.theme
 
 import androidx.compose.ui.graphics.Color
 

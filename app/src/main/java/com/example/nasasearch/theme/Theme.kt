@@ -1,4 +1,4 @@
-package com.example.nasasearch.ui.theme.theme.theme
+package com.example.nasasearch.theme
 
 import android.app.Activity
 import android.os.Build

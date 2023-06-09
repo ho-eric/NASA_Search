@@ -10,5 +10,4 @@ interface NASASearchApiService {
         @Query("q") searchTerm: String,
         @Query("media_type") mediaType: String = "image"
     ): Collection
-
 }
