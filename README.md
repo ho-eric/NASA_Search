@@ -13,6 +13,10 @@ For this project, I used:
 - [Navigation](https://developer.android.com/jetpack/androidx/releases/navigation)
   - Helped make navigation within my app easier to manage
   - It provided a way to define my app's navigation graph, handle navigation actions, and pass data between screens
+- [Material 3](https://m3.material.io/)
+  - Helped make building out the UI a lot simpler
+  - Included components that adheres to Google's material design standards such as search bar and card components
+
 
 I attempted to architect by app in the MVVM format:
 
